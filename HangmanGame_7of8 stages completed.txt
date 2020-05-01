@@ -1,0 +1,75 @@
+# Write your code here
+import random
+
+class HangmanGame:
+    def __init__(self):
+        self.welcome = 'H A N G M A N'
+        self.game_word = random.choice(['python', 'java', 'kotlin', 'javascript'])
+        self.current_guess = list('-' * len(self.game_word))
+        self.game_letters = set(self.game_word)
+        self.user_try = 0
+        self.tries = 8
+        self.tried_letters = set()
+        self.possible_letters = 'abcdefghijklmnopqrstuvwxyz'
+        self.errors_status = None
+
+    def start_game(self):
+        print(self.welcome)
+        self.simple_game()
+
+    def simple_game(self):
+        while True:
+            print('\n{}'.format(''.join(self.current_guess)))
+            self.guess_letter(input(f'Input a letter: ').strip())
+            if ''.join(self.current_guess) == self.game_word or self.user_try == self.tries:
+                print(HangmanGame.end_game_message(self))
+                break
+
+    # function that handles user input
+    def guess_letter(self, user_input,):
+        # reset self.errors_status value to False
+        self.errors_status = False
+        # check if user input contains errors
+        HangmanGame.check_errors(self, user_input)
+        # check if user input is in the game word
+        if user_input not in self.game_letters and self.errors_status == False:
+            print('No such letter in the word')
+            self.user_try += 1
+        HangmanGame.store_indexes(self, user_input)
+        HangmanGame.update_guess(self, user_input)
+        self.tried_letters.add(user_input)
+    
+    def check_errors(self, user_input):
+        if len(user_input) > 1:
+            print('You should print a single letter')
+        elif user_input not in self.possible_letters:
+            print('It is not an ASCII lowercase letter')
+        elif user_input in self.tried_letters:
+            print('You already typed this letter')
+        # change the value of self.errors_status to True if an error occurs
+        if user_input in self.tried_letters or user_input not in self.possible_letters or len(user_input) > 1:
+            self.errors_status = True
+
+    # function to store all user letter instances in the word
+    def store_indexes(self, user_input):
+        self.char_indexes = [] # list to store positions for each 'char' in 'game_word'
+        for i in range(len(self.game_word)):
+            if self.game_word[i] == user_input:
+                self.char_indexes.append(i)
+        return self.char_indexes
+
+    # function to update current state of guessing after user input
+    def update_guess(self, user_input):
+        for index in self.char_indexes:
+            if index in self.char_indexes:
+                self.current_guess[index] = user_input
+
+    # function to print final message for the user in the current game
+    def end_game_message(self):
+        if ''.join(self.current_guess) == self.game_word:
+            return 'You guessed the word!\nYou survived!'
+        return 'You are hanged!'
+
+# initialize game and and user interface
+hangman1 = HangmanGame()
+hangman1.start_game()

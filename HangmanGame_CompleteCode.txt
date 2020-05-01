@@ -4,6 +4,7 @@ import random
 class HangmanGame:
     def __init__(self):
         self.welcome = 'H A N G M A N'
+        self.menu = 'Type "play" to play the game, "exit" to quit: '
         self.game_word = random.choice(['python', 'java', 'kotlin', 'javascript'])
         self.current_guess = list('-' * len(self.game_word))
         self.game_letters = set(self.game_word)
@@ -15,7 +16,14 @@ class HangmanGame:
 
     def start_game(self):
         print(self.welcome)
-        self.simple_game()
+        user_option = input(self.menu).strip()
+        while True:
+            if user_option == 'play':
+                HangmanGame.__init__(self)
+                self.simple_game()
+            else:
+                break
+            user_option = input(f'\n{self.menu}').strip()
 
     def simple_game(self):
         while True:
